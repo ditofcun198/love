@@ -14,67 +14,204 @@
       }
       canvas {
         display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
     </style>
   </head>
   <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="countdownCanvas" style="z-index: 10"></canvas>
+    <canvas id="canvas" style="z-index: 5"></canvas>
+
+    <audio id="myAudio" autoplay loop>
+      <source src="phepmau.mp3" type="audio/mpeg" />
+      Trình duyệt của bạn không hỗ trợ audio.
+    </audio>
 
     <script>
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
 
+      const countdownCanvas = document.getElementById("countdownCanvas");
+      const countdownCtx = countdownCanvas.getContext("2d");
+
       let W = window.innerWidth;
       let H = window.innerHeight;
-      canvas.width = W;
-      canvas.height = H;
+      canvas.width = countdownCanvas.width = W;
+      canvas.height = countdownCanvas.height = H;
 
       window.addEventListener("resize", () => {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
+        W = canvas.width = countdownCanvas.width = window.innerWidth;
+        H = canvas.height = countdownCanvas.height = window.innerHeight;
       });
 
-      // Câu chúc sẽ hiện lên ngẫu nhiên
+      document.body.addEventListener("click", () => {
+        document.getElementById("myAudio").play();
+      });
+
       const messages = [
-        "Chúc em có tất cả 💖",
-        "Happy Birthday",
-        "01-08-2002",
+        "Yêu em, cô gái của tuiii💖",
+        "Cảm ơn em vì đã đến bên anh 🍀",
+        "19-08-2022",
+        "Anh không cần gì nhiều, chỉ cần có em bên cạnh 💞",
+        "Nếu yêu em là sai, anh chấp nhận không đúng bao giờ 🥺",
         "Chúc bé luôn xinh đẹp",
-        "Chúc mừng sinh nhật bé iu",
+        "Anh yêu em nhiều lắm",
+        "Gửi ngàn nụ hôn đến người con gái anh yêu 💋",
+        "Tình yêu của anh dành cho em ngày càng lớn 🧡",
+        "Em là người cuối cùng và duy nhất trong tim anh 💍",
       ];
 
-      function randomMessage() {
-        return messages[Math.floor(Math.random() * messages.length)];
-      }
-
-      // Danh sách nhiều ảnh
       const imagePaths = [
         "1.jpg",
         "2.jpg",
         "3.jpg",
         "4.jpg",
-      
-      ]; // thêm tên ảnh tại đây
-      const imageObjects = [];
+        "5.jpg",
+        "6.jpg",
+        "7.jpg",
+      ];
       const loadedImages = [];
 
       function preloadImages(callback) {
         let loadedCount = 0;
-
-        for (let i = 0; i < imagePaths.length; i++) {
+        imagePaths.forEach((src) => {
           const img = new Image();
-          img.src = imagePaths[i];
+          img.src = src;
           img.onload = () => {
             loadedImages.push(img);
-            loadedCount++;
-            if (loadedCount === imagePaths.length) {
-              callback();
-            }
+            if (++loadedCount === imagePaths.length) callback();
           };
+        });
+      }
+
+      let countdownNumber = 3;
+      let fragments = [];
+      let countdownFinished = false;
+      let isTyping = false;
+      let showCountdown = true;
+
+      function explodeNumber() {
+        fragments = [];
+        for (let i = 0; i < 60; i++) {
+          fragments.push({
+            x: W / 2,
+            y: H / 2,
+            vx: (Math.random() - 0.5) * 10,
+            vy: (Math.random() - 0.5) * 10,
+            alpha: 1,
+            size: 6 + Math.random() * 4,
+            color: "white",
+          });
         }
       }
 
+      function drawCountdown() {
+        if (!showCountdown || isTyping) return;
+
+        countdownCtx.clearRect(0, 0, W, H);
+        if (countdownNumber > 0) {
+          countdownCtx.fillStyle = "#ff82c2";
+          countdownCtx.font = "bold 120px Arial";
+          countdownCtx.textAlign = "center";
+          countdownCtx.textBaseline = "middle";
+          countdownCtx.fillText(countdownNumber, W / 2, H / 2);
+        }
+
+        for (let f of fragments) {
+          countdownCtx.globalAlpha = f.alpha;
+          countdownCtx.fillStyle = f.color;
+          countdownCtx.beginPath();
+          countdownCtx.arc(f.x, f.y, f.size, 0, 2 * Math.PI);
+          countdownCtx.fill();
+          f.x += f.vx;
+          f.y += f.vy;
+          f.alpha -= 0.02;
+        }
+        countdownCtx.globalAlpha = 1;
+        requestAnimationFrame(drawCountdown);
+      }
+
+      function showLoveMessage() {
+        isTyping = true;
+        const text = "Anh yêu em, bé Cún của anh ❤️";
+        let index = 0;
+
+        countdownCtx.clearRect(0, 0, W, H);
+        countdownCtx.font = "bold 42px 'Segoe Script', cursive";
+        countdownCtx.fillStyle = "#ff82c2";
+        countdownCtx.textAlign = "center";
+        countdownCtx.textBaseline = "middle";
+
+        function typeLetter() {
+          countdownCtx.clearRect(0, 0, W, H);
+          const currentText = text.substring(0, index);
+          countdownCtx.fillText(currentText + "|", W / 2, H / 2);
+
+          if (index < text.length) {
+            index++;
+            setTimeout(typeLetter, 100);
+          } else {
+            // Khi gõ xong dòng đầu tiên
+            setTimeout(() => {
+              countdownCtx.clearRect(0, 0, W, H);
+              countdownCtx.fillText(text, W / 2, H / 2);
+              // Thêm dòng 19/08 bên dưới
+              countdownCtx.font = "bold 36px 'Segoe Script', cursive";
+              countdownCtx.fillText("19/08", W / 2, H / 2 + 50);
+
+              // Sau đó tiếp tục hiệu ứng ảnh bay
+              setTimeout(() => {
+                countdownCtx.clearRect(0, 0, W, H);
+                isTyping = false;
+                countdownFinished = true;
+                createFloatingImages();
+                draw();
+              }, 1500);
+            }, 500);
+          }
+        }
+
+        typeLetter();
+      }
+
+      function startCountdown() {
+        let interval = setInterval(() => {
+          explodeNumber();
+          countdownNumber--;
+          if (countdownNumber < 1) {
+            clearInterval(interval);
+            showCountdown = false;
+            setTimeout(() => {
+              showLoveMessage();
+            }, 1000);
+          }
+        }, 2000);
+        drawCountdown();
+      }
+
       const particles = [];
+      const imageObjects = [];
+
+      function randomMessage() {
+        return messages[Math.floor(Math.random() * messages.length)];
+      }
+
+      function createFloatingImages() {
+        for (let i = 0; i < 15; i++) {
+          const img =
+            loadedImages[Math.floor(Math.random() * loadedImages.length)];
+          imageObjects.push({
+            img: img,
+            x: Math.random() * W,
+            y: H + Math.random() * 200,
+            size: 80 + Math.random() * 80,
+            speedY: 0.8 + Math.random(),
+            alpha: 0.7 + Math.random() * 0.3,
+          });
+        }
+      }
 
       function spawnParticle() {
         const size = 18 + Math.random() * 20;
@@ -88,48 +225,39 @@
         });
       }
 
-      function drawHeart(x, y, size, alpha) {
+      function drawHeart(x, y, size = 6, alpha = 1) {
         ctx.save();
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.bezierCurveTo(x, y - size / 2, x - size, y - size / 2, x - size, y);
+        ctx.bezierCurveTo(
+          x,
+          y - size / 2,
+          x - size,
+          y - size,
+          x - size,
+          y - 2 * size
+        );
         ctx.bezierCurveTo(
           x - size,
-          y + size,
-          x,
-          y + size * 1.5,
-          x,
-          y + size * 2
+          y - 3.5 * size,
+          x + size,
+          y - 3.5 * size,
+          x + size,
+          y - 2 * size
         );
-        ctx.bezierCurveTo(x, y + size * 1.5, x + size, y + size, x + size, y);
-        ctx.bezierCurveTo(x + size, y - size / 2, x, y - size / 2, x, y);
+        ctx.bezierCurveTo(x + size, y - size, x, y - size / 2, x, y);
+        ctx.fillStyle = "pink";
         ctx.fill();
         ctx.restore();
       }
 
-      function createFloatingImages() {
-        for (let i = 0; i < 30; i++) {
-          const img =
-            loadedImages[Math.floor(Math.random() * loadedImages.length)];
-          imageObjects.push({
-            img: img,
-            x: Math.random() * W,
-            y: Math.random() * H,
-            size: 50 + Math.random() * 40,
-            speedY: 0.5 + Math.random(),
-            alpha: 0.7 + Math.random() * 0.3,
-          });
-        }
-      }
-
-      function animate() {
+      function draw() {
         ctx.clearRect(0, 0, W, H);
+        if (!countdownFinished) return;
 
         if (Math.random() < 0.1) spawnParticle();
 
-        // Chữ bay
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
           ctx.globalAlpha = p.alpha;
@@ -143,9 +271,7 @@
           if (p.alpha <= 0) particles.splice(i, 1);
         }
 
-        // Ảnh bay lên
-        for (let i = 0; i < imageObjects.length; i++) {
-          const imgObj = imageObjects[i];
+        for (let imgObj of imageObjects) {
           ctx.globalAlpha = imgObj.alpha;
           ctx.drawImage(
             imgObj.img,
@@ -161,15 +287,12 @@
           }
         }
 
-        requestAnimationFrame(animate);
+        requestAnimationFrame(draw);
       }
 
-      // Chạy khi ảnh load xong
       preloadImages(() => {
-        createFloatingImages();
-        animate();
+        startCountdown();
       });
     </script>
   </body>
 </html>
-
