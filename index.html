@@ -2,14 +2,15 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Chúc mừng sinh nhật</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chúc mừng tình yêu</title>
     <style>
       html,
       body {
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background-color: black;
+        background: black;
       }
       canvas {
         display: block;
@@ -22,6 +23,7 @@
     <script>
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
+
       let W = window.innerWidth;
       let H = window.innerHeight;
       canvas.width = W;
@@ -32,27 +34,58 @@
         H = canvas.height = window.innerHeight;
       });
 
+      // Câu chúc sẽ hiện lên ngẫu nhiên
       const messages = [
-        "Anh yêu em nhiều lắm 💖",
-        "Chúc em thật nhiều vui vẻ",
-        "Luôn vui vẻ nhaaa 💗",
-        "Chúc mừng ngày kỉ niệm của chúng ta",
+        "Chúc em có tất cả 💖",
+        "Happy Birthday",
+        "01-08-2002",
+        "Chúc bé luôn xinh đẹp",
+        "Chúc mừng sinh nhật bé iu",
       ];
-
-      const particles = [];
 
       function randomMessage() {
         return messages[Math.floor(Math.random() * messages.length)];
       }
 
+      // Danh sách nhiều ảnh
+      const imagePaths = [
+        "1.jpg",
+        "2.jpg",
+        "3.jpg",
+        "4.jpg",
+        "/5.jpg",
+        "/6.jpg",
+        "/7.jpg",
+      ]; // thêm tên ảnh tại đây
+      const imageObjects = [];
+      const loadedImages = [];
+
+      function preloadImages(callback) {
+        let loadedCount = 0;
+
+        for (let i = 0; i < imagePaths.length; i++) {
+          const img = new Image();
+          img.src = imagePaths[i];
+          img.onload = () => {
+            loadedImages.push(img);
+            loadedCount++;
+            if (loadedCount === imagePaths.length) {
+              callback();
+            }
+          };
+        }
+      }
+
+      const particles = [];
+
       function spawnParticle() {
-        const size = 20 + Math.random() * 15;
+        const size = 18 + Math.random() * 20;
         particles.push({
           x: Math.random() * W,
           y: H + size,
           text: randomMessage(),
           size: size,
-          speed: 0.5 + Math.random() * 3,
+          speed: 0.5 + Math.random() * 2,
           alpha: 1,
         });
       }
@@ -78,11 +111,27 @@
         ctx.restore();
       }
 
+      function createFloatingImages() {
+        for (let i = 0; i < 30; i++) {
+          const img =
+            loadedImages[Math.floor(Math.random() * loadedImages.length)];
+          imageObjects.push({
+            img: img,
+            x: Math.random() * W,
+            y: Math.random() * H,
+            size: 50 + Math.random() * 40,
+            speedY: 0.5 + Math.random(),
+            alpha: 0.7 + Math.random() * 0.3,
+          });
+        }
+      }
+
       function animate() {
         ctx.clearRect(0, 0, W, H);
 
         if (Math.random() < 0.1) spawnParticle();
 
+        // Chữ bay
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
           ctx.globalAlpha = p.alpha;
@@ -93,16 +142,35 @@
 
           p.y -= p.speed;
           p.alpha -= 0.003;
+          if (p.alpha <= 0) particles.splice(i, 1);
+        }
 
-          if (p.alpha <= 0) {
-            particles.splice(i, 1);
+        // Ảnh bay lên
+        for (let i = 0; i < imageObjects.length; i++) {
+          const imgObj = imageObjects[i];
+          ctx.globalAlpha = imgObj.alpha;
+          ctx.drawImage(
+            imgObj.img,
+            imgObj.x,
+            imgObj.y,
+            imgObj.size,
+            imgObj.size
+          );
+          imgObj.y -= imgObj.speedY;
+          if (imgObj.y + imgObj.size < 0) {
+            imgObj.y = H + Math.random() * 100;
+            imgObj.x = Math.random() * W;
           }
         }
 
         requestAnimationFrame(animate);
       }
 
-      animate();
+      // Chạy khi ảnh load xong
+      preloadImages(() => {
+        createFloatingImages();
+        animate();
+      });
     </script>
   </body>
 </html>
