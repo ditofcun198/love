@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chúc mừng sinh nhật</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: black;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      let W = window.innerWidth;
+      let H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+
+      window.addEventListener("resize", () => {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      });
+
+      const messages = [
+        "Anh yêu em nhiều lắm 💖",
+        "Chúc em thật nhiều vui vẻ",
+        "Luôn vui vẻ nhaaa 💗",
+        "Chúc mừng ngày kỉ niệm của chúng ta",
+      ];
+
+      const particles = [];
+
+      function randomMessage() {
+        return messages[Math.floor(Math.random() * messages.length)];
+      }
+
+      function spawnParticle() {
+        const size = 20 + Math.random() * 15;
+        particles.push({
+          x: Math.random() * W,
+          y: H + size,
+          text: randomMessage(),
+          size: size,
+          speed: 0.5 + Math.random() * 3,
+          alpha: 1,
+        });
+      }
+
+      function drawHeart(x, y, size, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x, y - size / 2, x - size, y - size / 2, x - size, y);
+        ctx.bezierCurveTo(
+          x - size,
+          y + size,
+          x,
+          y + size * 1.5,
+          x,
+          y + size * 2
+        );
+        ctx.bezierCurveTo(x, y + size * 1.5, x + size, y + size, x + size, y);
+        ctx.bezierCurveTo(x + size, y - size / 2, x, y - size / 2, x, y);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+
+        if (Math.random() < 0.1) spawnParticle();
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          ctx.globalAlpha = p.alpha;
+          ctx.font = `${p.size}px sans-serif`;
+          ctx.fillStyle = "#ffb3ff";
+          ctx.fillText(p.text, p.x, p.y);
+          drawHeart(p.x + Math.random() * 30 - 15, p.y - 20, 6, 0.5);
+
+          p.y -= p.speed;
+          p.alpha -= 0.003;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
