@@ -243,11 +243,11 @@
       function spawnParticle() {
         const size = Math.floor(W / 25) + Math.random() * 5; // phù hợp kích thước nhỏ
         particles.push({
-          x: Math.random() * W,
+          x: Math.random() * (W * 0.4),
           y: H + size,
           text: randomMessage().substring(0, 25), // hạn chế độ dài
           size: size,
-          speed: 0.3 + Math.random() * 1.2,
+          speed: 0.5 + Math.random() * 1.2,
           alpha: 1.0,
         });
       }
@@ -294,7 +294,7 @@
           drawHeart(p.x + Math.random() * 30 - 15, p.y - 20, 6, 0.5);
 
           p.y -= p.speed;
-          p.alpha -= 0.003;
+          p.alpha -= 0.0015;
           if (p.alpha <= 0) particles.splice(i, 1);
         }
 
