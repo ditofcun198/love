@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Chúc mừng tình yêu</title>
     <style>
       html,
@@ -65,33 +64,11 @@
         "Chúc bé luôn xinh đẹp",
         "Anh yêu em nhiều lắm",
         "Gửi ngàn nụ hôn đến người con gái anh yêu 💋",
-        "Tình yêu của anh dành cho em ngày càng lớn 🧡",
+        "Tình yêu của anh dành cho em ngày càng lớn 🦜",
         "Em là người cuối cùng và duy nhất trong tim anh 💍",
       ];
 
-      const imagePaths = [
-        "1.jpg",
-        "2.jpg",
-        "3.jpg",
-        "4.jpg",
-        "5.jpg",
-        "6.jpg",
-        "7.jpg",
-        "8.jpg",
-        "9.jpg",
-        "10.jpg",
-        "11.jpg",
-        "12.jpg",
-        "13.jpg",
-        "14.jpg",
-        "15.jpg",
-        "16.jpg",
-        "17.jpg",
-        "18.jpg",
-        "19.jpg",
-        "20.jpg",
-      ];
-
+      const imagePaths = Array.from({ length: 20 }, (_, i) => `${i + 1}.jpg`);
       const loadedImages = [];
 
       function preloadImages(callback) {
@@ -136,7 +113,6 @@
           countdownCtx.shadowColor = "#ffb3ff";
           countdownCtx.shadowBlur = 20;
 
-          let fontSize = Math.floor(W / 2); // phù hợp với điện thoại
           let mainFontSize = Math.floor(W / 9);
           countdownCtx.font = `bold ${mainFontSize}px 'Segoe Script', cursive`;
           countdownCtx.textAlign = "center";
@@ -160,8 +136,9 @@
 
       function showLoveMessage() {
         isTyping = true;
-        const text = "A yêu e, bé Cún của anh ❤️";
-        let index = 0;
+        const textLines = ["Anh yêu em", "Bé Cún của anh ❤️"];
+        let lineIndex = 0;
+        let charIndex = 0;
 
         countdownCtx.clearRect(0, 0, W, H);
         countdownCtx.font = "bold 42px 'Segoe Script', cursive";
@@ -171,31 +148,44 @@
 
         function typeLetter() {
           countdownCtx.clearRect(0, 0, W, H);
-          const currentText = text.substring(0, index);
-          countdownCtx.fillText(currentText + "|", W / 2, H / 2);
+          for (let i = 0; i < lineIndex; i++) {
+            countdownCtx.fillText(textLines[i], W / 2, H / 2 + (i - 0.5) * 50);
+          }
+          const currentLine = textLines[lineIndex].substring(0, charIndex);
+          countdownCtx.fillText(
+            currentLine + "|",
+            W / 2,
+            H / 2 + (lineIndex - 0.5) * 50
+          );
 
-          if (index < text.length) {
-            index++;
+          if (charIndex < textLines[lineIndex].length) {
+            charIndex++;
             setTimeout(typeLetter, 100);
           } else {
-            // Khi gõ xong dòng đầu tiên
-            setTimeout(() => {
-              countdownCtx.clearRect(0, 0, W, H);
-              countdownCtx.fillText(text, W / 2, H / 2);
-              // Thêm dòng 19/08 bên dưới
-              let subFontSize = Math.floor(W / 22);
-              countdownCtx.font = `bold ${subFontSize}px 'Segoe Script', cursive`;
-              countdownCtx.fillText("19/08", W / 2, H / 2 + 50);
-
-              // Sau đó tiếp tục hiệu ứng ảnh bay
+            lineIndex++;
+            charIndex = 0;
+            if (lineIndex < textLines.length) {
+              setTimeout(typeLetter, 500);
+            } else {
               setTimeout(() => {
                 countdownCtx.clearRect(0, 0, W, H);
-                isTyping = false;
-                countdownFinished = true;
-                createFloatingImages();
-                draw();
-              }, 1500);
-            }, 500);
+                countdownCtx.fillText("Anh yêu em", W / 2, H / 2 - 25);
+                countdownCtx.fillText("Bé Cún của anh ❤️", W / 2, H / 2 + 25);
+
+                countdownCtx.font = `bold ${Math.floor(
+                  W / 22
+                )}px 'Segoe Script', cursive`;
+                countdownCtx.fillText("19/08", W / 2, H / 2 + 75);
+
+                setTimeout(() => {
+                  countdownCtx.clearRect(0, 0, W, H);
+                  isTyping = false;
+                  countdownFinished = true;
+                  createFloatingImages();
+                  draw();
+                }, 1500);
+              }, 1000);
+            }
           }
         }
 
@@ -233,7 +223,7 @@
             img: img,
             x: Math.random() * W,
             y: H + Math.random() * 200,
-            size: W < 500 ? 60 : 80 + Math.random() * 30,
+            size: W < 500 ? 60 : 100 + Math.random() * 50,
             speedY: 0.8 + Math.random(),
             alpha: 0.8 + Math.random() * 0.4,
           });
@@ -241,11 +231,11 @@
       }
 
       function spawnParticle() {
-        const size = Math.floor(W / 25) + Math.random() * 5; // phù hợp kích thước nhỏ
+        const size = Math.floor(W / 25) + Math.random() * 5;
         particles.push({
-          x: Math.random() * (W * 0.4),
+          x: Math.random() * (W * 0.3),
           y: H + size,
-          text: randomMessage().substring(0, 25), // hạn chế độ dài
+          text: randomMessage().substring(0, 25),
           size: size,
           speed: 0.5 + Math.random() * 1.2,
           alpha: 1.0,
