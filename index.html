@@ -12,12 +12,17 @@
         padding: 0;
         overflow: hidden;
         background: black;
+        width: 100%;
+        height: 100%;
       }
+
       canvas {
         display: block;
         position: absolute;
         top: 0;
         left: 0;
+        width: 100vw;
+        height: 100vh;
       }
     </style>
   </head>
@@ -72,7 +77,21 @@
         "5.jpg",
         "6.jpg",
         "7.jpg",
+        "8.jpg",
+        "9.jpg",
+        "10.jpg",
+        "11.jpg",
+        "12.jpg",
+        "13.jpg",
+        "14.jpg",
+        "15.jpg",
+        "16.jpg",
+        "17.jpg",
+        "18.jpg",
+        "19.jpg",
+        "20.jpg",
       ];
+
       const loadedImages = [];
 
       function preloadImages(callback) {
@@ -114,7 +133,9 @@
         countdownCtx.clearRect(0, 0, W, H);
         if (countdownNumber > 0) {
           countdownCtx.fillStyle = "#ff82c2";
-          countdownCtx.font = "bold 120px Arial";
+          let fontSize = Math.floor(W / 6); // phù hợp với điện thoại
+          let mainFontSize = Math.floor(W / 18);
+          countdownCtx.font = `bold ${mainFontSize}px 'Segoe Script', cursive`;
           countdownCtx.textAlign = "center";
           countdownCtx.textBaseline = "middle";
           countdownCtx.fillText(countdownNumber, W / 2, H / 2);
@@ -159,7 +180,8 @@
               countdownCtx.clearRect(0, 0, W, H);
               countdownCtx.fillText(text, W / 2, H / 2);
               // Thêm dòng 19/08 bên dưới
-              countdownCtx.font = "bold 36px 'Segoe Script', cursive";
+              let subFontSize = Math.floor(W / 22);
+              countdownCtx.font = `bold ${subFontSize}px 'Segoe Script', cursive`;
               countdownCtx.fillText("19/08", W / 2, H / 2 + 50);
 
               // Sau đó tiếp tục hiệu ứng ảnh bay
@@ -200,28 +222,29 @@
       }
 
       function createFloatingImages() {
-        for (let i = 0; i < 10; i++) {
+        const count = W < 500 ? 5 : 10;
+        for (let i = 0; i < count; i++) {
           const img =
             loadedImages[Math.floor(Math.random() * loadedImages.length)];
           imageObjects.push({
             img: img,
             x: Math.random() * W,
             y: H + Math.random() * 200,
-            size: 80 + Math.random() * 80,
-            speedY: 0.8 + Math.random(),
-            alpha: 0.7 + Math.random() * 0.3,
+            size: W < 500 ? 60 : 80 + Math.random() * 40,
+            speedY: 0.5 + Math.random(),
+            alpha: 0.6 + Math.random() * 0.4,
           });
         }
       }
 
       function spawnParticle() {
-        const size = 18 + Math.random() * 20;
+        const size = Math.floor(W / 25) + Math.random() * 5; // phù hợp kích thước nhỏ
         particles.push({
           x: Math.random() * W,
           y: H + size,
-          text: randomMessage(),
+          text: randomMessage().substring(0, 25), // hạn chế độ dài
           size: size,
-          speed: 0.5 + Math.random() * 2,
+          speed: 0.5 + Math.random() * 1.2,
           alpha: 1,
         });
       }
