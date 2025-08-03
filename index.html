@@ -137,7 +137,7 @@
           countdownCtx.shadowBlur = 20;
 
           let fontSize = Math.floor(W / 2); // phù hợp với điện thoại
-          let mainFontSize = Math.floor(W / 18);
+          let mainFontSize = Math.floor(W / 9);
           countdownCtx.font = `bold ${mainFontSize}px 'Segoe Script', cursive`;
           countdownCtx.textAlign = "center";
           countdownCtx.textBaseline = "middle";
@@ -160,7 +160,7 @@
 
       function showLoveMessage() {
         isTyping = true;
-        const text = "A yêu em, bé Cún của anh ❤️";
+        const text = "A yêu e, bé Cún của anh ❤️";
         let index = 0;
 
         countdownCtx.clearRect(0, 0, W, H);
@@ -225,7 +225,7 @@
       }
 
       function createFloatingImages() {
-        const count = 15;
+        const count = 10;
         for (let i = 0; i < count; i++) {
           const img =
             loadedImages[Math.floor(Math.random() * loadedImages.length)];
@@ -248,7 +248,7 @@
           text: randomMessage().substring(0, 25), // hạn chế độ dài
           size: size,
           speed: 0.3 + Math.random() * 1.2,
-          alpha: 0.9,
+          alpha: 1.0,
         });
       }
 
