@@ -133,7 +133,10 @@
         countdownCtx.clearRect(0, 0, W, H);
         if (countdownNumber > 0) {
           countdownCtx.fillStyle = "#ff82c2";
-          let fontSize = Math.floor(W / 6); // phù hợp với điện thoại
+          countdownCtx.shadowColor = "#ffb3ff";
+          countdownCtx.shadowBlur = 20;
+
+          let fontSize = Math.floor(W / 2); // phù hợp với điện thoại
           let mainFontSize = Math.floor(W / 18);
           countdownCtx.font = `bold ${mainFontSize}px 'Segoe Script', cursive`;
           countdownCtx.textAlign = "center";
@@ -157,7 +160,7 @@
 
       function showLoveMessage() {
         isTyping = true;
-        const text = "Anh yêu em, bé Cún của anh ❤️";
+        const text = "A yêu em, bé Cún của anh ❤️";
         let index = 0;
 
         countdownCtx.clearRect(0, 0, W, H);
@@ -222,7 +225,7 @@
       }
 
       function createFloatingImages() {
-        const count = W < 500 ? 5 : 10;
+        const count = 15;
         for (let i = 0; i < count; i++) {
           const img =
             loadedImages[Math.floor(Math.random() * loadedImages.length)];
@@ -230,9 +233,9 @@
             img: img,
             x: Math.random() * W,
             y: H + Math.random() * 200,
-            size: W < 500 ? 60 : 80 + Math.random() * 40,
-            speedY: 0.5 + Math.random(),
-            alpha: 0.6 + Math.random() * 0.4,
+            size: W < 500 ? 60 : 80 + Math.random() * 30,
+            speedY: 0.8 + Math.random(),
+            alpha: 0.8 + Math.random() * 0.4,
           });
         }
       }
@@ -244,8 +247,8 @@
           y: H + size,
           text: randomMessage().substring(0, 25), // hạn chế độ dài
           size: size,
-          speed: 0.5 + Math.random() * 1.2,
-          alpha: 1,
+          speed: 0.3 + Math.random() * 1.2,
+          alpha: 0.9,
         });
       }
 
