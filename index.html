@@ -122,14 +122,12 @@
 
         for (let f of fragments) {
           countdownCtx.globalAlpha = f.alpha;
-          countdownCtx.fillStyle = f.color;
-          countdownCtx.beginPath();
-          countdownCtx.arc(f.x, f.y, f.size, 0, 2 * Math.PI);
-          countdownCtx.fill();
+          drawHeart(f.x, f.y, f.size * 2, f.alpha, countdownCtx); // ← thay bằng trái tim
           f.x += f.vx;
           f.y += f.vy;
           f.alpha -= 0.02;
         }
+
         countdownCtx.globalAlpha = 1;
         requestAnimationFrame(drawCountdown);
       }
@@ -243,12 +241,12 @@
         });
       }
 
-      function drawHeart(x, y, size = 6, alpha = 1) {
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.bezierCurveTo(
+      function drawHeart(x, y, size = 12, alpha = 1, context = ctx) {
+        context.save();
+        context.globalAlpha = alpha;
+        context.beginPath();
+        context.moveTo(x, y);
+        context.bezierCurveTo(
           x,
           y - size / 2,
           x - size,
@@ -256,33 +254,33 @@
           x - size,
           y - 2 * size
         );
-        ctx.bezierCurveTo(
+        context.bezierCurveTo(
           x - size,
-          y - 3.5 * size,
+          y - 3 * size,
           x + size,
-          y - 3.5 * size,
+          y - 3 * size,
           x + size,
           y - 2 * size
         );
-        ctx.bezierCurveTo(x + size, y - size, x, y - size / 2, x, y);
-        ctx.fillStyle = "pink";
-        ctx.fill();
-        ctx.restore();
+        context.bezierCurveTo(x + size, y - size, x, y - size / 2, x, y);
+        context.fillStyle = "#ff66b2";
+        context.fill();
+        context.restore();
       }
 
       function draw() {
         ctx.clearRect(0, 0, W, H);
         if (!countdownFinished) return;
 
-        if (Math.random() < 0.1) spawnParticle();
+        if (particles.length < 20 && Math.random() < 0.02) spawnParticle();
 
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
           ctx.globalAlpha = p.alpha;
           ctx.font = `${p.size}px sans-serif`;
           ctx.fillStyle = "#ffb3ff";
+          drawHeart(p.x - 30, p.y + 5, 14, p.alpha);
           ctx.fillText(p.text, p.x, p.y);
-          drawHeart(p.x + Math.random() * 30 - 15, p.y - 20, 6, 0.5);
 
           p.y -= p.speed;
           p.alpha -= 0.0015;
@@ -314,4 +312,3 @@
     </script>
   </body>
 </html>
-
