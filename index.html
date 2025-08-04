@@ -244,25 +244,16 @@
       function drawHeart(x, y, size = 12, alpha = 1, context = ctx) {
         context.save();
         context.globalAlpha = alpha;
+        context.translate(x, y);
+        context.scale(size / 100, size / 100); // tỉ lệ chuẩn chỉnh hơn cho kích thước lớn nhỏ
+
         context.beginPath();
-        context.moveTo(x, y);
-        context.bezierCurveTo(
-          x,
-          y - size / 2,
-          x - size,
-          y - size,
-          x - size,
-          y - 2 * size
-        );
-        context.bezierCurveTo(
-          x - size,
-          y - 3 * size,
-          x + size,
-          y - 3 * size,
-          x + size,
-          y - 2 * size
-        );
-        context.bezierCurveTo(x + size, y - size, x, y - size / 2, x, y);
+        context.moveTo(0, -20); // Đỉnh tim
+
+        context.bezierCurveTo(25, -50, 75, -20, 0, 40); // Phần lồi bên phải
+        context.bezierCurveTo(-75, -20, -25, -50, 0, -20); // Phần lồi bên trái
+        context.closePath();
+
         context.fillStyle = "#ff66b2";
         context.fill();
         context.restore();
