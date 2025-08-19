@@ -134,7 +134,7 @@
 
       function showLoveMessage() {
         isTyping = true;
-        const textLines = ["Anh yêu em", "Bé Cún của anh ❤️"];
+        const textLines = ["Anh yêu em", "Bé Cún của anh ❤️","Anh xin lỗi vì đã làm em buồn"];
         let lineIndex = 0;
         let charIndex = 0;
 
@@ -169,12 +169,13 @@
                 countdownCtx.clearRect(0, 0, W, H);
                 countdownCtx.fillText("Anh yêu em", W / 2, H / 2 - 25);
                 countdownCtx.fillText("Bé Cún của anh ❤️", W / 2, H / 2 + 25);
+                countdownCtx.fillText("Bé Cún của anh ❤️", W / 2, H / 2 + 50);
 
                 countdownCtx.font = `bold ${Math.floor(
                   W / 12
                 )}px 'Segoe Script', cursive`;
                 countdownCtx.fillStyle = "#ff66b2";
-                countdownCtx.fillText("19/08", W / 2, H / 2 + 75);
+                countdownCtx.fillText("19/08", W / 2, H / 2 + 100);
 
                 setTimeout(() => {
                   countdownCtx.clearRect(0, 0, W, H);
@@ -303,5 +304,6 @@
     </script>
   </body>
 </html>
+
 
 
